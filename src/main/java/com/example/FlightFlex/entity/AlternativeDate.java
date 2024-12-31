@@ -2,31 +2,21 @@ package com.example.FlightFlex.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "alternative_dates")
-public class Alternatives {
-    
+public class AlternativeDate {
     @Id
     private int userId;
-
-    @Column(name = "suggested_date")
-    private String suggestedDate;
-
-    @Column(name = "price")
-    private String price;
-
-    @Column(name = "availability")
+    private String suggestedDate; // Use `LocalDate` if you prefer Java's date type
+    private double price;
     private String availability;
 
-    //Getters and Setters
+    // Getters and Setters
     public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId){
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -37,21 +27,20 @@ public class Alternatives {
     public void setSuggestedDate(String suggestedDate) {
         this.suggestedDate = suggestedDate;
     }
-    
-    public String getPrice() {
+
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
-    
+
     public String getAvailability() {
         return availability;
     }
 
-    public void getAvailability(String availability) {
+    public void setAvailability(String availability) {
         this.availability = availability;
     }
-    
 }

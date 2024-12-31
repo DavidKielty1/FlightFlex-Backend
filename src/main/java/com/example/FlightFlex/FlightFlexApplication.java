@@ -1,18 +1,55 @@
 package com.example.FlightFlex;
-import com.example.FlightFlex.grpc.FlightFlexServiceImpl;
 
-
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.ApplicationContext;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-public class FlightFlexApplication {
-    public static void main(String[] args) throws Exception {
-        Server server = ServerBuilder.forPort(50051)
-            .addService(new FlightFlexServiceImpl())
-            .build()
-            .start();
+import com.example.FlightFlex.grpc.FlightFlexServiceImpl;
 
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.example.FlightFlex.controller", "com.example.FlightFlex.grpc", "com.example.FlightFlex.entity", "com.example.FlightFlex.repository", "com.example.FlightFlex.config", "com.example.FlightFlex.service"})
+@EnableJpaRepositories(basePackages = "com.example.FlightFlex.repository")
+@EntityScan(basePackages = "com.example.FlightFlex.entity")
+public class FlightFlexApplication {
+
+    private Server server;
+
+    public static void main(String[] args) {
+        ApplicationContext ctx = SpringApplication.run(FlightFlexApplication.class, args); // Start Spring Boot
+        System.out.println("Beans in application context:");
+        for (String beanName : ctx.getBeanDefinitionNames()) {
+            System.out.println(beanName);
+        }
+
+        // Start the gRPC server
+        FlightFlexApplication app = new FlightFlexApplication();
+        try {
+            app.startGrpcServer(ctx.getBean(FlightFlexServiceImpl.class));
+        } catch (Exception e) {
+            System.err.println("Failed to start gRPC server: " + e.getMessage());
+        }
+    }
+
+    private void startGrpcServer(FlightFlexServiceImpl flightFlexService) throws Exception {
+        server = ServerBuilder.forPort(50051)
+                .addService(flightFlexService)  // Inject your gRPC service implementation here
+                .build()
+                .start();
         System.out.println("gRPC server started on port 50051");
-        server.awaitTermination();
+
+        // Hook for shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down gRPC server");
+            if (server != null) {
+                server.shutdown();
+            }
+        }));
+
+        server.awaitTermination(); // Keep the gRPC server running
     }
 }
