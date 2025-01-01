@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 public class AlternativeDate {
     @Id
     private int userId;
-    private String suggestedDate; // Use `LocalDate` if you prefer Java's date type
+    private String alternativeDate; // Use `LocalDate` if you prefer Java's date type
     private double price;
     private String availability;
 
@@ -20,12 +20,12 @@ public class AlternativeDate {
         this.userId = userId;
     }
 
-    public String getSuggestedDate() {
-        return suggestedDate;
+    public String getAlternativeDate() {
+        return alternativeDate;
     }
 
-    public void setSuggestedDate(String suggestedDate) {
-        this.suggestedDate = suggestedDate;
+    public void setAlternativeDate(String alternativeDate) {
+        this.alternativeDate = alternativeDate;
     }
 
     public double getPrice() {

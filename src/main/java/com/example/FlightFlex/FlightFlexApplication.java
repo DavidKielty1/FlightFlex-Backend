@@ -9,7 +9,8 @@ import org.springframework.context.ApplicationContext;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-import com.example.FlightFlex.grpc.FlightFlexServiceImpl;
+import com.example.FlightFlex.grpc.AdRecommendationsServiceImpl;
+import com.example.FlightFlex.grpc.AlternativeDateServiceImpl;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.example.FlightFlex.controller", "com.example.FlightFlex.grpc", "com.example.FlightFlex.entity", "com.example.FlightFlex.repository", "com.example.FlightFlex.config", "com.example.FlightFlex.service"})
@@ -29,15 +30,19 @@ public class FlightFlexApplication {
         // Start the gRPC server
         FlightFlexApplication app = new FlightFlexApplication();
         try {
-            app.startGrpcServer(ctx.getBean(FlightFlexServiceImpl.class));
+            app.startGrpcServer(
+                ctx.getBean(AdRecommendationsServiceImpl.class),
+                ctx.getBean(AlternativeDateServiceImpl.class)
+            );
         } catch (Exception e) {
             System.err.println("Failed to start gRPC server: " + e.getMessage());
         }
     }
 
-    private void startGrpcServer(FlightFlexServiceImpl flightFlexService) throws Exception {
+    private void startGrpcServer(AdRecommendationsServiceImpl adService, AlternativeDateServiceImpl dateService) throws Exception {
         server = ServerBuilder.forPort(50051)
-                .addService(flightFlexService)  // Inject your gRPC service implementation here
+                .addService(adService)  // Register AdRecommendationsService
+                .addService(dateService)
                 .build()
                 .start();
         System.out.println("gRPC server started on port 50051");

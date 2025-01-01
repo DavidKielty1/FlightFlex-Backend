@@ -8,16 +8,16 @@ import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FlightFlexServiceImpl extends FlightServiceGrpc.FlightServiceImplBase {
-    private final AdRecommendationService service;
+public class AdRecommendationsServiceImpl extends AdRecommendationsServiceGrpc.AdRecommendationsServiceImplBase {
+    private final AdRecommendationService adRecommendationService;
 
-    public FlightFlexServiceImpl(AdRecommendationService service) {
-        this.service = service;
+    public AdRecommendationsServiceImpl(AdRecommendationService service) {
+        this.adRecommendationService = service;
     }
 
     @Override
     public void getAdRecommendations(UserIdRequest request, StreamObserver<AdRecommendationsResponse> responseObserver) {
-        AdRecommendation recommendation = service.getRecommendationByUserId(request.getUserId());
+        AdRecommendation recommendation = adRecommendationService.getRecommendationByUserId(request.getUserId());
         if (recommendation != null) {
             AdRecommendationsResponse response = AdRecommendationsResponse.newBuilder()
                     .addRecommendedAds(recommendation.getRecommendedAds())
